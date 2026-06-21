@@ -50,6 +50,77 @@
     line-height: 1;
     display: inline-block;
   }
+
+  /* puntino discreto in alto a sinistra per aprire l'editor */
+  #dot {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #222;
+    cursor: pointer;
+    z-index: 10;
+    border: none;
+    padding: 0;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  #dot:hover {
+    background: #555;
+    transform: scale(1.4);
+  }
+
+  /* pannello editor, nascosto di default */
+  #editor {
+    position: fixed;
+    top: 30px;
+    left: 14px;
+    z-index: 20;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: rgba(20,20,20,0.95);
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 8px;
+  }
+
+  #editor.open {
+    display: flex;
+  }
+
+  #editor input {
+    font-family: "Futura Condensed Extra Bold", sans-serif;
+    background: #000;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 14px;
+    width: 180px;
+    outline: none;
+  }
+
+  #editor input:focus {
+    border-color: #888;
+  }
+
+  #editor button {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+
+  #editor button:hover {
+    background: #ddd;
+  }
 </style>
 </head>
 <body>
@@ -59,11 +130,21 @@
     </div>
   </div>
 
+  <button id="dot" title="Modifica testo"></button>
+  <div id="editor">
+    <input id="editorInput" type="text" placeholder="Scrivi qui..." maxlength="40">
+    <button id="editorApply">OK</button>
+  </div>
+
   <script>
     const SCALE_Y = 3;   // <- fattore di stretch verticale: aumenta/diminuisci qui
 
     const el = document.getElementById('testo');
     const box = document.querySelector('.box');
+    const dot = document.getElementById('dot');
+    const editor = document.getElementById('editor');
+    const editorInput = document.getElementById('editorInput');
+    const editorApply = document.getElementById('editorApply');
 
     function fit() {
       el.style.transform = 'none';
@@ -93,6 +174,30 @@
     }
 
     window.addEventListener('resize', fit);
+
+    // --- editor al volo, locale, non tocca l'URL ---
+    dot.addEventListener('click', () => {
+      editor.classList.toggle('open');
+      if (editor.classList.contains('open')) {
+        editorInput.value = el.textContent;
+        editorInput.focus();
+        editorInput.select();
+      }
+    });
+
+    function applyText() {
+      const val = editorInput.value.trim();
+      if (val) {
+        el.textContent = val.toUpperCase();
+        fit();
+      }
+    }
+
+    editorApply.addEventListener('click', applyText);
+    editorInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') applyText();
+      if (e.key === 'Escape') editor.classList.remove('open');
+    });
   </script>
 </body>
 </html>
