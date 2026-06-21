@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>67</title>
+<title>...</title>
 <style>
   @font-face {
     font-family: "Futura Condensed Extra Bold";
@@ -30,7 +30,6 @@
     position: relative;
   }
 
-  /* RIQUADRO FISSO: percentuali rispetto allo schermo, uguale su ogni risoluzione */
   .box {
     position: absolute;
     left: 5%;
@@ -51,7 +50,6 @@
     display: inline-block;
   }
 
-  /* puntino discreto in alto a sinistra per aprire l'editor */
   #dot {
     position: fixed;
     top: 14px;
@@ -72,7 +70,6 @@
     transform: scale(1.4);
   }
 
-  /* pannello editor, nascosto di default */
   #editor {
     position: fixed;
     top: 30px;
@@ -111,17 +108,17 @@
 <body>
   <div class="stage">
     <div class="box">
-      <span id="testo">KEVIN GAY</span>
+      <span id="testo">...</span>
     </div>
   </div>
 
   <button id="dot" title="Modifica testo"></button>
   <div id="editor">
-    <input id="editorInput" type="text" placeholder="Scrivi qui e premi Invio...">
+    <input id="editorInput" type="text" placeholder="...">
   </div>
 
   <script>
-    const SCALE_Y = 3;   // <- fattore di stretch verticale: aumenta/diminuisci qui
+    const SCALE_Y = 3;
 
     const el = document.getElementById('testo');
     const box = document.querySelector('.box');
@@ -131,21 +128,37 @@
 
     function fit() {
       el.style.transform = 'none';
+
+      // misuro il testo in modo isolato dal box (che potrebbe essere
+      // alterato da un testo troppo corto/lungo scritto dall'utente)
+      el.style.position = 'fixed';
+      el.style.left = '-99999px';
+      el.style.top = '0';
       el.style.fontSize = '100px';
 
-      const boxRect = box.getBoundingClientRect();
       const textRect = el.getBoundingClientRect();
+      const boxRect = box.getBoundingClientRect();
 
-      // scala il font in base alla LARGHEZZA naturale per riempire il box
-      const scale = boxRect.width / textRect.width;
+      // scala 1: riempie la LARGHEZZA del box
+      const scaleByWidth = boxRect.width / textRect.width;
+
+      // scala 2: l'altezza finale (font naturale * SCALE_Y) non deve
+      // superare l'altezza del box — utile con parole corte (es. "67")
+      // scritte dall'utente nell'editor, che altrimenti sforerebbero
+      const scaleByHeight = boxRect.height / (textRect.height * SCALE_Y);
+
+      // uso la scala più restrittiva tra le due, così resta sempre dentro
+      const scale = Math.min(scaleByWidth, scaleByHeight);
       el.style.fontSize = (100 * scale) + 'px';
 
-      // applica lo stretch verticale fisso, attorno al centro
+      el.style.position = '';
+      el.style.left = '';
+      el.style.top = '';
+
       el.style.transform = `scaleY(${SCALE_Y})`;
     }
 
     function ready() {
-      // i font custom a volte impiegano un frame in più: doppio rAF per sicurezza
       requestAnimationFrame(() => requestAnimationFrame(fit));
     }
 
@@ -158,7 +171,6 @@
 
     window.addEventListener('resize', fit);
 
-    // --- editor al volo, locale, non tocca l'URL ---
     dot.addEventListener('click', () => {
       editor.classList.toggle('open');
       if (editor.classList.contains('open')) {
