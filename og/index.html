@@ -2,7 +2,10 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>-.- . ...- .. -. / --. .- -.--</title>
+<title>-.-. .... .. / .-.. . --. --. . / .-..- / --. .- -.--</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='black'/><text x='50' y='68' font-family='Arial Black, sans-serif' font-weight='900' font-size='70' fill='white' text-anchor='middle' transform='scale(1,1.6) translate(0,-26)'>K</text></svg>">
+<meta property="og:title" content="01001011 01000101 01010110 01001001 01001110">
+<meta property="og:description" content="01000111 01000001 01011001">
 <style>
   @font-face {
     font-family: "Futura Condensed Extra Bold";
@@ -48,6 +51,35 @@
     white-space: nowrap;
     line-height: 1;
     display: inline-block;
+    cursor: default;
+  }
+
+  .stage.shake {
+    animation: shake 0.25s ease-out;
+  }
+
+  @keyframes shake {
+    0%   { transform: translate(0, 0); }
+    15%  { transform: translate(-6px, 3px); }
+    30%  { transform: translate(5px, -4px); }
+    45%  { transform: translate(-4px, -2px); }
+    60%  { transform: translate(3px, 3px); }
+    75%  { transform: translate(-2px, -1px); }
+    100% { transform: translate(0, 0); }
+  }
+
+  #flash {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  #flash.active {
+    opacity: 1;
+    transition: opacity 2.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 </style>
 </head>
@@ -57,6 +89,8 @@
       <span id="testo">KEVIN GAY</span>
     </div>
   </div>
+
+  <div id="flash"></div>
 
   <script>
     const SCALE_Y = 3;
@@ -89,6 +123,51 @@
     }
 
     window.addEventListener('resize', fit);
+
+    const stage = document.querySelector('.stage');
+    const flash = document.getElementById('flash');
+    const ORIGINAL_TEXT = el.textContent;
+    let busy = false;
+
+    el.addEventListener('click', () => {
+      if (busy) return;
+      busy = true;
+
+      // scatto immediato: solo il testo cambia, niente flash ancora
+      el.textContent = 'FLASHBANG';
+      fit();
+      stage.classList.add('shake');
+
+      setTimeout(() => {
+        stage.classList.remove('shake');
+      }, 250);
+
+      // dopo 1s: arriva il flash bianco a piena opacità
+      setTimeout(() => {
+        flash.style.transition = 'none';
+        flash.style.opacity = '1';
+        // forzo il reflow per assicurarmi che il bianco pieno venga renderizzato
+        // prima di attivare il fade, altrimenti il browser potrebbe accorpare i due stati
+        void flash.offsetWidth;
+
+        // il testo torna quello originale subito, nascosto dal bianco pieno
+        el.textContent = ORIGINAL_TEXT;
+        fit();
+
+        // breve tenuta a bianco pieno, poi fade-out lento (assuefazione dell'occhio):
+        // quando il flash sparisce del tutto, il testo originale è già lì
+        setTimeout(() => {
+          flash.classList.add('active');
+          flash.style.transition = '';
+          flash.style.opacity = '0';
+        }, 60);
+
+        setTimeout(() => {
+          flash.classList.remove('active');
+          busy = false;
+        }, 60 + 2500);
+      }, 1000);
+    });
   </script>
 </body>
 </html>
