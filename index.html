@@ -13,29 +13,30 @@
     overflow: hidden;
   }
 
-  .wrap {
+  svg {
+    display: block;
     width: 100vw;
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
-  .testo {
-    color: #fff;
+  text {
+    fill: #fff;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 900;
-    font-size: 18vw;       /* occupa tutta la larghezza, senza sforare */
-    line-height: 0.8;
-    white-space: nowrap;
-    transform: scaleY(6);  /* stretch verso l'alto, aumentato */
-    transform-origin: center;
   }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="testo">KEVIN GAY</div>
-  </div>
+  <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
+    <text
+      x="500"
+      y="500"
+      text-anchor="middle"
+      dominant-baseline="central"
+      textLength="900"
+      lengthAdjust="spacingAndGlyphs"
+      style="font-size: 200px; transform: scaleY(3); transform-origin: 500px 500px;"
+    >KEVIN GAY</text>
+  </svg>
 </body>
 </html>
