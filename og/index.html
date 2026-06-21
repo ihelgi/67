@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>-.-. .... .. / .-.. . --. --. . / .-..- / --. .- -.--</title>
+<title>--. .- -.-- / -.-. .... .. / .-.. . --. --. .</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='black'/><text x='50' y='66' font-family='Arial Black, sans-serif' font-weight='900' font-size='56' fill='white' text-anchor='middle'>67</text></svg>">
 <style>
   @font-face {
@@ -29,6 +29,7 @@
     width: 100vw;
     height: 100vh;
     position: relative;
+    overflow: hidden;
   }
 
   .box {
@@ -40,7 +41,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
   }
 
   #testo {
@@ -107,7 +108,16 @@
       const boxRect = box.getBoundingClientRect();
       const textRect = el.getBoundingClientRect();
 
-      const scale = boxRect.width / textRect.width;
+      // misura sempre su "KEVIN GAY" come riferimento fisso (la stringa più lunga),
+      // così tutte le scritte condividono lo stesso font-size e la stessa altezza visiva
+      const savedText = el.textContent;
+      el.textContent = 'KEVIN GAY';
+      void el.offsetWidth;
+      const refRect = el.getBoundingClientRect();
+      el.textContent = savedText;
+      void el.offsetWidth;
+
+      const scale = boxRect.width / refRect.width;
       el.style.fontSize = (100 * scale) + 'px';
 
       el.style.transform = `scaleY(${SCALE_Y})`;
