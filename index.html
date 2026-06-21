@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>67</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
 <style>
   html, body {
     margin: 0;
@@ -21,22 +24,35 @@
 
   text {
     fill: #fff;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 900;
+    font-family: "Futura Condensed Extra Bold", "Futura Extra Bold", "Futura Bold", Oswald, sans-serif;
+    font-weight: 800;
   }
 </style>
 </head>
 <body>
   <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
     <text
+      id="testo"
       x="500"
       y="500"
       text-anchor="middle"
-      dominant-baseline="central"
       textLength="900"
       lengthAdjust="spacingAndGlyphs"
-      style="font-size: 200px; transform: scaleY(3); transform-origin: 500px 500px;"
+      style="font-size: 200px; transform-origin: 500px 500px;"
     >KEVIN GAY</text>
   </svg>
+
+  <script>
+    const scaleY = 3; // <- modifica qui il fattore di stretch verticale
+    const el = document.getElementById('testo');
+
+    // centra verticalmente in base al bounding box REALE del testo
+    const bbox = el.getBBox();
+    const centerY = bbox.y + bbox.height / 2;
+    const dy = 500 - centerY;
+
+    el.setAttribute('y', 500 + dy);
+    el.style.transform = `scaleY(${scaleY})`;
+  </script>
 </body>
 </html>
