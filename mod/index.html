@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>...</title>
+<title>67</title>
 <style>
   @font-face {
     font-family: "Futura Condensed Extra Bold";
@@ -103,18 +103,38 @@
   #editor input:focus {
     border-color: #888;
   }
+
+  #clear {
+    background: transparent;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  #clear:hover {
+    background: #222;
+    border-color: #888;
+  }
 </style>
 </head>
 <body>
   <div class="stage">
     <div class="box">
-      <span id="testo">...</span>
+      <span id="testo">67</span>
     </div>
   </div>
 
   <button id="dot" title="Modifica testo"></button>
   <div id="editor">
-    <input id="editorInput" type="text" placeholder="...">
+    <input id="editorInput" type="text" placeholder="67">
+    <button id="clear" title="Cancella">×</button>
   </div>
 
   <script>
@@ -125,6 +145,7 @@
     const dot = document.getElementById('dot');
     const editor = document.getElementById('editor');
     const editorInput = document.getElementById('editorInput');
+    const clearBtn = document.getElementById('clear');
 
     function fit() {
       el.style.transform = 'none';
@@ -191,6 +212,17 @@
     editorInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') applyText();
       if (e.key === 'Escape') editor.classList.remove('open');
+    });
+
+    clearBtn.addEventListener('click', () => {
+      editorInput.value = '';
+      editorInput.focus();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!editor.classList.contains('open')) return;
+      if (editor.contains(e.target) || dot.contains(e.target)) return;
+      editor.classList.remove('open');
     });
   </script>
 </body>
