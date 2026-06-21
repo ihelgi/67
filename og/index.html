@@ -142,7 +142,7 @@
         stage.classList.remove('shake');
       }, 250);
 
-      // dopo 1s: arriva il flash bianco a piena opacità
+      // dopo 1s: arriva il flash bianco a piena opacita
       setTimeout(() => {
         flash.style.transition = 'none';
         flash.style.opacity = '1';
@@ -154,18 +154,18 @@
         el.textContent = ORIGINAL_TEXT;
         fit();
 
-        // breve tenuta a bianco pieno, poi fade-out lento (assuefazione dell'occhio):
-        // quando il flash sparisce del tutto, il testo originale è già lì
+        // tenuta a bianco pieno per 3s, poi fade-out lento (assuefazione dell'occhio):
+        // quando il flash sparisce del tutto, il testo originale e gia li
         setTimeout(() => {
           flash.classList.add('active');
           flash.style.transition = '';
           flash.style.opacity = '0';
-        }, 60);
+        }, 3000);
 
         setTimeout(() => {
           flash.classList.remove('active');
           busy = false;
-        }, 60 + 2500);
+        }, 3000 + 2500);
       }, 1000);
     });
   </script>
