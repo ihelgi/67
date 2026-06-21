@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>67</title>
+<title>-.- . ...- .. -. / --. .- -.--</title>
 <style>
   @font-face {
     font-family: "Futura Condensed Extra Bold";
@@ -106,21 +106,6 @@
   #editor input:focus {
     border-color: #888;
   }
-
-  #editor button {
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    background: #fff;
-    color: #000;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-  }
-
-  #editor button:hover {
-    background: #ddd;
-  }
 </style>
 </head>
 <body>
@@ -132,8 +117,7 @@
 
   <button id="dot" title="Modifica testo"></button>
   <div id="editor">
-    <input id="editorInput" type="text" placeholder="Scrivi qui..." maxlength="40">
-    <button id="editorApply">OK</button>
+    <input id="editorInput" type="text" placeholder="Scrivi qui e premi Invio..." maxlength="40">
   </div>
 
   <script>
@@ -144,18 +128,38 @@
     const dot = document.getElementById('dot');
     const editor = document.getElementById('editor');
     const editorInput = document.getElementById('editorInput');
-    const editorApply = document.getElementById('editorApply');
 
     function fit() {
       el.style.transform = 'none';
+
+      // misuro la larghezza/altezza "naturale" del testo in modo isolato,
+      // staccandolo temporaneamente dal flusso del box (che potrebbe
+      // essere alterato da un testo troppo lungo o troppo corto)
+      el.style.position = 'fixed';
+      el.style.left = '-99999px';
+      el.style.top = '0';
       el.style.fontSize = '100px';
 
-      const boxRect = box.getBoundingClientRect();
       const textRect = el.getBoundingClientRect();
+      const boxRect = box.getBoundingClientRect();
 
-      // scala il font in base alla LARGHEZZA naturale per riempire il box
-      const scale = boxRect.width / textRect.width;
+      // scala 1: riempie la LARGHEZZA del box
+      const scaleByWidth = boxRect.width / textRect.width;
+
+      // scala 2: l'altezza finale (font naturale * SCALE_Y) non deve
+      // superare l'altezza del box — altrimenti con parole corte
+      // (font enorme per riempire la larghezza) si sfora in verticale
+      const scaleByHeight = boxRect.height / (textRect.height * SCALE_Y);
+
+      // uso la scala più restrittiva tra le due, così resta sempre dentro
+      const scale = Math.min(scaleByWidth, scaleByHeight);
+
       el.style.fontSize = (100 * scale) + 'px';
+
+      // rimetto il testo nel flusso normale del box
+      el.style.position = '';
+      el.style.left = '';
+      el.style.top = '';
 
       // applica lo stretch verticale fisso, attorno al centro
       el.style.transform = `scaleY(${SCALE_Y})`;
@@ -193,7 +197,6 @@
       }
     }
 
-    editorApply.addEventListener('click', applyText);
     editorInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') applyText();
       if (e.key === 'Escape') editor.classList.remove('open');
